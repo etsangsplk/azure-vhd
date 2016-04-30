@@ -1,4 +1,5 @@
-PKG = github.com/Azure/azure-sdk-for-go
+PKG = github.com/Azure/go-autorest/autorest/azure\
+		github.com/Azure/azure-sdk-for-go
 
 godeps:
 	GOPATH=`godep path` godep save ./...
