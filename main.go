@@ -28,9 +28,22 @@ func main() {
 		fmt.Printf("failed to get VM: %+v\n", err)
 		return
 	}
-	disks := vm.Properties.StorageProfile.DataDisks;
-	for _, disk := range *disks {
+	disks := *vm.Properties.StorageProfile.DataDisks;
+	for _, disk := range disks {
 		//FIXME: check nil before reference
 		fmt.Printf("lun %d name %s vhd %s size(GB): %d\n", *disk.Lun, *disk.Name, *disk.Vhd.URI, *disk.DiskSizeGB)
 	}
+	d := disks
+	d = d[:len(d) - 1]
+	newVM := compute.VirtualMachine {
+		Location: vm.Location,
+		Properties: &compute.VirtualMachineProperties {
+			StorageProfile: &compute.StorageProfile {
+				DataDisks: &d,
+			},
+		},
+	}
+	res, err := client.CreateOrUpdate(cred["resourceGroup"], cred["vm"],
+		newVM, nil)
+	fmt.Printf("delete disk: res %#v err %v\n", res, err)
 }
